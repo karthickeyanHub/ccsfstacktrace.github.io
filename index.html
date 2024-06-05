@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Hierarchy</title>
+    <style>
+        .hierarchy {
+            font-family: Arial, sans-serif;
+        }
+        .parent {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .child {
+            margin-left: 20px;
+            font-weight: normal;
+        }
+		input, button {
+			margin:10px;
+		}
+    </style>
+</head>
+<body>
+    <h1>Hierarchy from CSV</h1>
+    <input type="file" id="csvFile" accept=".csv" /><br/>
+	<input type="text" id="seachParams" ><br/>
+	<button onclick="handleFileSelect">Search</button><br/>
+    <div id="hierarchy" class="hierarchy"></div>
+    <!--<textarea id="hierarchyText" rows="10" cols="100"></textarea>-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
