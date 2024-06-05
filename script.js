@@ -3,9 +3,19 @@ var visitedNode = [];
 var searchVar = "";
 var dupicateRecurcive = [];
 var copyText = "";
+var fileData;
 function handleFileSelect(event) {
-	searchVar = document.getElementById("seachParams").value;
-    const file = event.target.files[0];
+	visitedNode = [];
+	dupicateRecurcive = [];
+	copyText = "";
+	fileData;
+	fileData = event.target.files[0];
+    
+}
+function handleClick(event){
+	searchVar = document.getElementById("searchParams").value;
+
+	const file = fileData;
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
@@ -23,8 +33,8 @@ function handleFileSelect(event) {
         };
         reader.readAsText(file);
     }
+	
 }
-
 function buildHierarchy(data) {
     const hierarchy = {};
     data.forEach(row => {
