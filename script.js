@@ -38,10 +38,10 @@ function handleClick(event){
 function buildHierarchy(data) {
     const hierarchy = {};
     data.forEach(row => {
-        const parent = row['found_in'];
-        const method = row['method'];
-		//const method = row['found_in'];
-        //const parent = row['method'];
+        const parent = row['Found_In__c'];
+        const method = row['Method_Name__c'];
+		//const method = row['Found_In__c'];
+        //const parent = row['Method_Name__c'];
         if (!hierarchy[parent]) {
             hierarchy[parent] = [];
         }
