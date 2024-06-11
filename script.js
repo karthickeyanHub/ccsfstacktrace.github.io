@@ -4,6 +4,7 @@ var searchVar = "";
 var dupicateRecurcive = [];
 var copyText = "";
 var fileData;
+var isNoMethodFound = false;
 function handleFileSelect(event) {
 	visitedNode = [];
 	dupicateRecurcive = [];
@@ -12,9 +13,12 @@ function handleFileSelect(event) {
 	fileData = event.target.files[0];
     
 }
+function createOnClickHandler(parameter) {
+	document.getElementById("searchParams").value = parameter;
+}
 function handleClick(event){
 	searchVar = document.getElementById("searchParams").value;
-
+	isNoMethodFound = false;
 	const file = fileData;
     if (file) {
         const reader = new FileReader();
@@ -59,6 +63,10 @@ function createHierarchyList(hierarchy, parent, isChild) {
 				const methodElement = document.createElement('li');
 				visitedNode.push(method);				
 				methodElement.textContent = method;
+				// methodElement.onclick = createOnClickHandler(method);
+				methodElement.addEventListener('click', function() {                
+					createOnClickHandler(method)
+				});
 				const childList = createHierarchyList(hierarchy, method, true);
 				if (isChild) {
 					methodElement.className = 'child';
@@ -87,6 +95,7 @@ function displayHierarchy(hierarchy) {
     container.innerHTML = '';
     Object.keys(hierarchy).forEach(parent => {
         if (!parent.startsWith('m') && parent !== 'undefined' && parent === searchVar) {
+			isNoMethodFound = true;
             const parentElement = document.createElement('div');
             parentElement.className = 'parent';
             parentElement.textContent = parent;
@@ -97,6 +106,9 @@ function displayHierarchy(hierarchy) {
             container.appendChild(parentElement);
         }
     });
+	if(!isNoMethodFound){
+		//alert('No Occurence Found');
+	}
 }
 
 function buildHierarchyText(hierarchy, parent, level) {
