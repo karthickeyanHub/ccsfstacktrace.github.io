@@ -31,7 +31,7 @@ function handleClick(event){
                     const data = results.data;
                     const hierarchy = buildHierarchy(data);
                     displayHierarchy(hierarchy);
-                   displayHierarchyText(hierarchy);
+                  // displayHierarchyText(hierarchy);
                 }
             });
         };
