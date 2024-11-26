@@ -115,7 +115,7 @@ function buildHierarchyText(hierarchy, parent, level) {
     let text = '';
     if (hierarchy[parent]) {
         hierarchy[parent].forEach(method => {
-            text += '----'.repeat(level) + method + '\n';
+            text += '   {'.repeat(level) + method + '}\n';
             text += buildHierarchyText(hierarchy, method, level + 1);
         });
     }
