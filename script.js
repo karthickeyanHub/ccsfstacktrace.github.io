@@ -124,12 +124,12 @@ function buildHierarchyText(hierarchy, parent, level) {
 
 function displayHierarchyText(hierarchy) {
     const textarea = document.getElementById('hierarchyText');
-    let text = '';
+    let text = '{\n';
     Object.keys(hierarchy).forEach(parent => {
         if (!parent.startsWith('m') && parent !== 'undefined' && parent === searchVar) {
-            text += '{\n'+parent + '\n}';
+            text += parent + '\n';
             text += buildHierarchyText(hierarchy, parent, 1);
         }
     });
-    textarea.value = text;
+    textarea.value = text+'\n}';
 }
