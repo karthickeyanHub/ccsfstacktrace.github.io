@@ -31,7 +31,7 @@ function handleClick(event){
                     const data = results.data;
                     const hierarchy = buildHierarchy(data);
                     displayHierarchy(hierarchy);
-                  // displayHierarchyText(hierarchy);
+                    displayHierarchyText(hierarchy);
                 }
             });
         };
@@ -126,7 +126,7 @@ function displayHierarchyText(hierarchy) {
     const textarea = document.getElementById('hierarchyText');
     let text = '';
     Object.keys(hierarchy).forEach(parent => {
-        if (!parent.startsWith('m') && parent !== 'undefined') {
+        if (!parent.startsWith('m') && parent !== 'undefined' && parent === searchVar) {
             text += parent + '\n';
             text += buildHierarchyText(hierarchy, parent, 1);
         }
