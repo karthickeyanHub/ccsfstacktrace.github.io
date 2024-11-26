@@ -115,7 +115,7 @@ function buildHierarchyText(hierarchy, parent, level) {
     let text = '';
     if (hierarchy[parent]) {
         hierarchy[parent].forEach(method => {
-            text += ' \n  {'.repeat(level) + method + '}\n';
+            text += '   {\n'.repeat(level) + method + '}\n}';
             text += buildHierarchyText(hierarchy, method, level + 1);
         });
     }
@@ -127,7 +127,7 @@ function displayHierarchyText(hierarchy) {
     let text = '';
     Object.keys(hierarchy).forEach(parent => {
         if (!parent.startsWith('m') && parent !== 'undefined' && parent === searchVar) {
-            text += '{\n'+parent + '}\n';
+            text += '{\n'+parent + '}';
             text += buildHierarchyText(hierarchy, parent, 1);
         }
     });
