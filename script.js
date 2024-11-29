@@ -119,7 +119,7 @@ function buildHierarchyText(hierarchy, parent, level) {
     if (hierarchy[parent]) {
         hierarchy[parent].forEach(method => {
 	    if(!visitedNodeForJSON.includes(method)){
-		    visitedNode.push(method);
+		    visitedNodeForJSON.push(method);
            // text += '    '.repeat(level)+'\n    {\n' + method + '\n    }\n';
             //text += buildHierarchyText(hierarchy, method, level + 1);
 		finalJson[method] = buildHierarchyText(hierarchy, method, level + 1);
