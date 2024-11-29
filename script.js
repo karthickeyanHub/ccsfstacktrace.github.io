@@ -1,5 +1,6 @@
 document.getElementById('csvFile').addEventListener('change', handleFileSelect, false);
 var visitedNode = [];
+var visitedNodeForJSON = [];
 var searchVar = "";
 var dupicateRecurcive = [];
 var copyText = "";
@@ -7,6 +8,7 @@ var fileData;
 var isNoMethodFound = false;
 function handleFileSelect(event) {
 	visitedNode = [];
+	visitedNodeForJSON =[];
 	dupicateRecurcive = [];
 	copyText = "";
 	fileData;
@@ -116,10 +118,12 @@ function buildHierarchyText(hierarchy, parent, level) {
     const finalJson = {};
     if (hierarchy[parent]) {
         hierarchy[parent].forEach(method => {
-		
+	    if(!visitedNodeForJSON.includes(method)){
+		    visitedNode.push(method);
            // text += '    '.repeat(level)+'\n    {\n' + method + '\n    }\n';
             //text += buildHierarchyText(hierarchy, method, level + 1);
 		finalJson[method] = buildHierarchyText(hierarchy, method, level + 1);
+	    }
         });
     }
      return finalJson;
