@@ -25,8 +25,18 @@
             margin: 10px;
         }
         .alignTextArea {
-            float: right;
-            margin-top: 20px; /* Add some space from the top */
+            width: 100%;
+            height: 400px; /* Set a fixed height for the textarea */
+        }
+        .container {
+            max-width: 100%;
+        }
+        .side-by-side {
+            display: flex;
+            justify-content: space-between;
+        }
+        .hierarchy-container, .textarea-container {
+            width: 48%; /* Each takes up 48% of the row */
         }
     </style>
 </head>
@@ -45,15 +55,19 @@
             </div>
         </div>
         <center><button onclick="handleClick()" class="btn btn-primary">Search</button></center>
-        <div id="hierarchy" class="hierarchy"></div>
-       
-         <textarea class="alighTextArea" name="message" rows="4" cols="50" id='hierarchyText'>
-              
-        </textarea>
+
+        <div class="side-by-side mt-4">
+            <!-- Hierarchy Display Section -->
+            <div class="hierarchy-container">
+                <div id="hierarchy" class="hierarchy"></div>
+            </div>
+            <!-- Textarea Section -->
+            <div class="textarea-container">
+                <textarea class="alignTextArea" name="message" rows="4" cols="50" id="hierarchyText"></textarea>
+            </div>
+        </div>
     </div>
-    <div>
-        
-    </div>
+
     <!-- Include necessary scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="script.js"></script>
