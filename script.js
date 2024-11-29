@@ -137,5 +137,5 @@ function displayHierarchyText(hierarchy) {
         }
     });
     // textarea.value = text+'\n}';
-	textarea.value = finalJson;
+	textarea.value = JSON.stringify(finalJson);
 }
