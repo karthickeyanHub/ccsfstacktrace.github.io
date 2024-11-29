@@ -121,8 +121,6 @@ function buildHierarchyText(hierarchy, parent, level) {
             //text += buildHierarchyText(hierarchy, method, level + 1);
 		finalJson[method] = buildHierarchyText(hierarchy, method, level + 1);
         });
-    }else{
-	finalJson[method]={'reachecd End'};
     }
      return finalJson;
    // return text;
