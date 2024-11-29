@@ -111,26 +111,31 @@ function displayHierarchy(hierarchy) {
 	}
 }
 
-function buildHierarchyText(hierarchy, parent, level) {
+function buildHierarchyText(hierarchy, parent, level, finalJson) {
     let text = '';
     if (hierarchy[parent]) {
         hierarchy[parent].forEach(method => {
 		
-            text += '    '.repeat(level)+'\n    {\n' + method + '\n    }\n';
-            text += buildHierarchyText(hierarchy, method, level + 1);
+           // text += '    '.repeat(level)+'\n    {\n' + method + '\n    }\n';
+            //text += buildHierarchyText(hierarchy, method, level + 1);
+		finalJson[parent] ={method: buildHierarchyText(hierarchy, method, level + 1,finalJson)};
         });
     }
-    return text;
+     return finalJson;
+   // return text;
 }
 
 function displayHierarchyText(hierarchy) {
     const textarea = document.getElementById('hierarchyText');
     let text = '{\n';
+    let finalJson = {};
     Object.keys(hierarchy).forEach(parent => {
         if (!parent.startsWith('m') && parent !== 'undefined' && parent === searchVar) {
-            text += parent + '\n';
-            text += buildHierarchyText(hierarchy, parent, 1);
+           // text += parent + '\n';
+           // text += buildHierarchyText(hierarchy, parent, 1, finalJson);
+		finalJson= {parent: buildHierarchyText(hierarchy, parent, 1, finalJson)}
         }
     });
-    textarea.value = text+'\n}';
+    // textarea.value = text+'\n}';
+	textarea.value = finalJson;
 }
