@@ -9,6 +9,7 @@
     <style>
         body {
             background-color: #f0faff; /* Light Blue Background */
+            font-family: 'Arial', sans-serif;
         }
         .hierarchy {
             font-family: Arial, sans-serif;
@@ -38,41 +39,67 @@
         .hierarchy-container, .textarea-container {
             width: 48%; /* Each takes up 48% of the row */
         }
-		.toggle {
-		  position: relative;
-		  width: 50px;
-		  height: 25px;
-		  background-color: #ccc;
-		  border-radius: 50px;
-		  cursor: pointer;
-		  transition: background-color 0.3s;
-		}
-		.toggle:before {
-		  content: "";
-		  position: absolute;
-		  top: 2.5px;
-		  left: 2.5px;
-		  width: 20px;
-		  height: 20px;
-		  background-color: white;
-		  border-radius: 50%;
-		  transition: transform 0.3s;
-		}
-		.toggle.on {
-		  background-color: #4CAF50;
-		}
-		.toggle.on:before {
-		  transform: translateX(25px);
-		}
-		.label {
-		  margin-left: 10px;
-		  font-size: 16px;
-		}
+        .toggle {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background-color: #ccc;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .toggle:before {
+            content: "";
+            position: absolute;
+            top: 2.5px;
+            left: 2.5px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .toggle.on {
+            background-color: #4CAF50;
+        }
+        .toggle.on:before {
+            transform: translateX(25px);
+        }
+        .label {
+            margin-left: 10px;
+            font-size: 16px;
+        }
+        .publicis-logo {
+            height: 40px; /* Set the size of the logo */
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 2rem;
+            color: #004d7a; /* Publicis Sapient's primary dark blue color */
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #ff7e00; /* Publicis Sapient orange color */
+            border-color: #ff7e00;
+        }
+        .btn-primary:hover {
+            background-color: #e76f00;
+            border-color: #e76f00;
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Stack Trace - Method Hierarchy</h1>
+        <!-- Publicis Sapient Branding Header -->
+        <div class="header">
+            <img src="https://www.publicissapient.com/-/media/images/logos/publicis-sapient-logo.svg" alt="Publicis Sapient Logo" class="publicis-logo">
+            <h1 class="mb-4">Stack Trace - Method Hierarchy</h1>
+        </div>
         <p class="mb-4">A developer tool to expedite debugging</p>
         <div class="row mb-3">
             <div class="col-md-6">
@@ -81,20 +108,16 @@
             </div>
             <div class="col-md-6">
                 <label for="searchParams" class="form-label">Class.Method Name</label>
-				<!--
-				CCSF => cancelTransactionController.createOrUpdateAssessmentsForProp8
-				Sanmatio => AppraiserActivityAnnualTriggerHandler.processAppraiserActivities
-				-->
                 <input type="text" id="searchParams" class="form-control" value="">
             </div>
         </div>
-		<center>
-			<div class="toggle-wrapper">
-			  <div id="toggle" class="toggle"></div>
-			  <span id="toggleLabel" class="label">Down Stream</span>
-			</div>
-			<button onclick="handleClick()" class="btn btn-primary">Search</button>
-		</center>
+        <center>
+            <div class="toggle-wrapper">
+                <div id="toggle" class="toggle"></div>
+                <span id="toggleLabel" class="label">Down Stream</span>
+            </div>
+            <button onclick="handleClick()" class="btn btn-primary">Search</button>
+        </center>
 
         <div class="side-by-side mt-4">
             <!-- Hierarchy Display Section -->
