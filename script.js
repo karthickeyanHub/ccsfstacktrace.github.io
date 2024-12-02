@@ -6,6 +6,23 @@ var dupicateRecurcive = [];
 var copyText = "";
 var fileData;
 var isNoMethodFound = false;
+var isUpStream = false;
+const toggle = document.getElementById('toggle');
+  const toggleLabel = document.getElementById('toggleLabel');
+
+  toggle.addEventListener('click', function() {
+    toggle.classList.toggle('on');
+
+    // Update label based on the toggle status
+    if (toggle.classList.contains('on')) {
+	  isUpStream = true;
+      toggleLabel.textContent = 'Up Stream';
+    } else {
+	  isUpStream = false;
+      toggleLabel.textContent = 'Down Stream';
+    }
+  });
+
 function handleFileSelect(event) {
 	visitedNode = [];
 	visitedNodeForJSON =[];
@@ -44,10 +61,15 @@ function handleClick(event){
 function buildHierarchy(data) {
     const hierarchy = {};
     data.forEach(row => {
-        const parent = row['Found_In__c'];
-        const method = row['Method_Name__c'];
-		//const method = row['Found_In__c'];
-        //const parent = row['Method_Name__c'];
+		let parent;
+		let method;
+		if(!isUpStream){
+			parent = row['Found_In__c'];
+			method = row['Method_Name__c'];
+		}else{
+			method = row['Found_In__c'];
+			parent = row['Method_Name__c'];
+		}
         if (!hierarchy[parent]) {
             hierarchy[parent] = [];
         }
