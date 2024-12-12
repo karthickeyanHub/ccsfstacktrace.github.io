@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stack Trace - Method Hierarchy</title>
     <!-- Include Bootstrap CSS -->
+	 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -26,26 +28,27 @@
         }
         .alignTextArea {
             width: 100%;
-            height: 400px; /* Set a fixed height for the textarea */
+            height: 350px; /* Set a fixed height for the textarea */
         }
         .container {
-            max-width: 100%;
+            max-width: 90%;
         }
         .side-by-side {
             display: flex;
             justify-content: space-between;
         }
         .hierarchy-container, .textarea-container {
-            width: 48%; /* Each takes up 48% of the row */
+            width: 50%; /* Each takes up 48% of the row */
         }
 		.toggle {
 		  position: relative;
-		  width: 50px;
+		  width: 60px;
 		  height: 25px;
-		  background-color: #ccc;
+		  background-color: #4CAF50;
 		  border-radius: 50px;
 		  cursor: pointer;
 		  transition: background-color 0.3s;
+		  Display: inline-block;
 		}
 		.toggle:before {
 		  content: "";
@@ -62,48 +65,171 @@
 		  background-color: #4CAF50;
 		}
 		.toggle.on:before {
-		  transform: translateX(25px);
+		  transform: translateX(35px);
 		}
 		.label {
-		  margin-left: 10px;
+		  margin: 15px;
 		  font-size: 16px;
 		}
+		.spaceMaintain{	
+			padding-bottom:50px;	
+		}
+		.fontStyle{
+			font-size: 25px;
+			margin:0;
+			padding:0;
+			margin-bottom: 1.5rem !important;		
+			line-height: 1.2;
+		}
+		.subHeading{
+			font-size: 20px;
+			margin:0;
+			padding:0;
+			margin-bottom: 1.5rem !important;		
+			line-height: 1.2;
+		}
+		.lebelALign{
+			margin-bottom: .5rem  !important;
+			font-size: 17px !important;
+			float: left;
+			margin-right: 26px !important;
+			margin-top: 20px !important;
+		}
+		label{
+			Display: inline-block;
+		}
+		.rowStyle{
+			flex: auto;
+			width: 100%;
+		}
+		
+		.inputControle{
+			line-height : 28px;
+			width: 50%;
+			font-size : 18px;
+		}
+		.toggle-wrapper{
+			Display: inline-block;
+			width: 192px;
+		}
+		.searchButton{
+			display: block;
+			width: 230px;
+			font-weight: bold;
+			font-size: 27px;
+			line-height: 55px;
+			margin-top: 30px;
+		}
+		
+		
+		 .textarea-container {
+            position: relative;
+            width: fit-content;
+            margin: 20px;
+        }
+
+        /* Styling the textarea */
+        textarea {
+            width: 450px;
+            height: 350px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Styling the copy button */
+        .copy-btn {
+            position: absolute;
+            top: 1px;
+            right: 10px;
+            border: none;
+            border-radius: 50%;
+            padding: 1px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .copy-btn:hover {
+            background-color: #808080;
+        }
+
+        .copy-tooltip {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            top: -30px;
+            right: 10px;
+            font-size: 12px;
+            z-index: 1;
+        }
+
+        .copy-btn:active + .copy-tooltip {
+            visibility: visible;
+        }
+		.icon-button {
+            font-size: 16px;
+            padding: 10px 20px
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .icon-button:hover {
+            background-color: #45a049;
+        }
+
+        .icon-button i {
+            margin-right: 8px; /* Space between the icon and text */
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="mb-4">Stack Trace - Method Hierarchy</h1>
-        <p class="mb-4">A developer tool to expedite debugging</p>
+		<center>
+        <h1 class="mb-4 fontStyle"><u>Stack Trace - Method Hierarchy</u></h1>
+        <p class="mb-4 subHeading">A developer tool to expedite debugging</p>
+		</center>
+		<hr/>
         <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="csvFile" class="form-label">Choose Hierarchy file</label>
-                <input type="file" id="csvFile" class="form-control" accept=".csv" />
+            <div class="col-md-6 rowStyle">
+                <label for="csvFile" class="lebelALign">Choose Hierarchy file:</label>
+                <input type="file" id="csvFile" class="form-control inputControle" accept=".csv" />
             </div>
-            <div class="col-md-6">
-                <label for="searchParams" class="form-label">Class.Method Name</label>
+            <div class="col-md-6 rowStyle">
+                <label for="searchParams" class="lebelALign">Search Method&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; :&nbsp;</label>
 				<!--
 				CCSF => cancelTransactionController.createOrUpdateAssessmentsForProp8
 				Sanmatio => AppraiserActivityAnnualTriggerHandler.processAppraiserActivities
 				-->
-                <input type="text" id="searchParams" class="form-control" value="">
+                <input type="text" id="searchParams" placeholder="className.MethodName" class="form-control inputControle" value="cancelTransactionController.createOrUpdateAssessmentsForProp8">
             </div>
         </div>
-		<center>
-			<div class="toggle-wrapper">
+		<div>
+			<div class="side-by-side toggle-wrapper">			
 			  <div id="toggle" class="toggle"></div>
-			  <span id="toggleLabel" class="label">Down Stream</span>
+			  <span id="toggleLabel" class="label ">Downstream</span>
+
 			</div>
-			<button onclick="handleClick()" class="btn btn-primary">Search</button>
-		</center>
+			<button onclick="handleClick()" class="btn btn-primary searchButton">Search</button>
+		</div>
 
         <div class="side-by-side mt-4">
-            <!-- Hierarchy Display Section -->
-            <div class="hierarchy-container">
-                <div id="hierarchy" class="hierarchy"></div>
-            </div>
             <!-- Textarea Section -->
             <div class="textarea-container">
                 <textarea class="alignTextArea" name="message" rows="4" cols="50" id="hierarchyText"></textarea>
+				<button class="copy-btn" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> </button>
+            </div>
+			
+            <!-- Hierarchy Display Section -->
+            <div class="hierarchy-container">
+                <div id="hierarchy" class="hierarchy"></div>
             </div>
         </div>
     </div>
