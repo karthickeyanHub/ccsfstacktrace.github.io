@@ -16,10 +16,10 @@ const toggle = document.getElementById('toggle');
     // Update label based on the toggle status
     if (toggle.classList.contains('on')) {
 	  isUpStream = true;
-      toggleLabel.textContent = 'Up Stream';
+      toggleLabel.textContent = 'Upstream';
     } else {
 	  isUpStream = false;
-      toggleLabel.textContent = 'Down Stream';
+      toggleLabel.textContent = 'Downstream';
     }
   });
 
@@ -154,15 +154,26 @@ function buildHierarchyText(hierarchy, parent, level) {
 
 function displayHierarchyText(hierarchy) {
     const textarea = document.getElementById('hierarchyText');
-    let text = '{\n';
+    let text = '';
     let finalJson = {};
     Object.keys(hierarchy).forEach(parent => {
         if (!parent.startsWith('m') && parent !== 'undefined' && parent === searchVar) {
            // text += parent + '\n';
            // text += buildHierarchyText(hierarchy, parent, 1, finalJson);
-		finalJson= buildHierarchyText(hierarchy, parent, 1);
+			finalJson[parent] = buildHierarchyText(hierarchy, parent, 1);
         }
     });
     // textarea.value = text+'\n}';
-	textarea.value = JSON.stringify(finalJson);
+	textarea.value = '\n'+JSON.stringify(finalJson, null, 4);
 }
+ function copyTextareaValue() {
+            var textarea = document.getElementById("hierarchyText");
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            var tooltip = document.getElementById("copyTooltip");
+            tooltip.style.visibility = 'visible';
+            setTimeout(function() {
+                tooltip.style.visibility = 'hidden';
+            }, 1000);
+        }
