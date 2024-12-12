@@ -44,7 +44,7 @@
 		  position: relative;
 		  width: 60px;
 		  height: 25px;
-		  background-color: #4CAF50;
+		  background-color: #FF0000;
 		  border-radius: 50px;
 		  cursor: pointer;
 		  transition: background-color 0.3s;
@@ -62,7 +62,7 @@
 		  transition: transform 0.3s;
 		}
 		.toggle.on {
-		  background-color: #4CAF50;
+		  background-color: #FF0000;
 		}
 		.toggle.on:before {
 		  transform: translateX(35px);
@@ -113,7 +113,7 @@
 			width: 192px;
 		}
 		.searchButton{
-			display: block;
+			display: inline;
 			width: 230px;
 			font-weight: bold;
 			font-size: 27px;
@@ -188,6 +188,10 @@
         .icon-button i {
             margin-right: 8px; /* Space between the icon and text */
         }
+		.pythonButton{
+			Display: inline;
+			width: 420;
+		}
     </style>
 </head>
 <body>
@@ -218,13 +222,16 @@
 
 			</div>
 			<button onclick="handleClick()" class="btn btn-primary searchButton">Search</button>
+
+			<button onclick="downloadFile()" class="btn btn-primary pythonButton ">Download Python Script</button>
+
 		</div>
 
         <div class="side-by-side mt-4">
             <!-- Textarea Section -->
             <div class="textarea-container">
                 <textarea class="alignTextArea" name="message" rows="4" cols="50" id="hierarchyText"></textarea>
-				<button class="copy-btn" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> </button>
+				<button class="copy-btn pythonButton" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> Copy JSON</button>
             </div>
 			
             <!-- Hierarchy Display Section -->
@@ -237,5 +244,218 @@
     <!-- Include necessary scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script src="script.js"></script>
+	<div id="pythonCode" style="Display:none">
+import requests
+import urllib.parse
+from simple_salesforce import Salesforce
+import openpyxl
+import re
+from datetime import datetime
+import csv
+
+#Instruction
+# 1) Update the authentication info
+# 2) Import requests, urllib.parse, openpyxl, csv, re
+#           datetime import datetime, simple_salesforce import Salesforce 
+
+username = 'userName@xyz.e2e' #User Id
+password = 'password' #User Password
+security_token = 'CVO8sdfr9rUPobzHCa44yWkN' #Security Token
+domain = 'test--esd.sandbox.my' # Org base URL
+
+
+allApexRec = []
+allMethoDictinary = []
+sf = Salesforce(username=username, password=password, security_token=security_token, domain=domain)
+if sf.session_id:
+    print("Connection successful!")
+else:
+    print("Connection failed.")
+
+def getMethodDictinory(access_token):
+    tooling_api_endpoint = 'https://' + domain + '.salesforce.com/services/data/v53.0/'
+    offsetVal = len(allMethoDictinary)
+    # Construct the query
+    query = "SELECT Id, Name, Starting_Line__c, End_Line__c, Class_And_Method_Name__c FROM Method_Dictionary__c offset  " +str \
+        (offsetVal)
+    headers = {'Authorization': 'Bearer ' + access_token}
+    params = {'q': query}
+    res = requests.get(tooling_api_endpoint + 'query/', headers=headers, params=params)
+    if res.status_code == 200:
+        response_body = res.json()
+        recordsData = response_body.get('records', [])
+        if (len(recordsData)) != 0:
+            for eachMethoDictinary in recordsData:
+                allMethoDictinary.append(eachMethoDictinary)
+            getMethodDictinory(access_token)
+    else:
+        return res.status_code
+    return allMethoDictinary
+
+def findMethodLineGenerateCSV():
+    apexClassData = allApexRec
+    methodDictinary = allMethoDictinary
+    contrlDuplicate = []
+    stackTraceToInsert = []
+    ws = []
+    ws.append(['Name', 'Method_Name__c', 'Found_In__c', 'Unique_Identiier__c'])
+    dictMthodDictinary = {}
+    for eachMethod in methodDictinary:
+        if eachMethod['Name'] in dictMthodDictinary:
+            newList = dictMthodDictinary[eachMethod['Name']]
+            newList.append(eachMethod)
+            dictMthodDictinary[eachMethod['Name']] = newList
+        else:
+            newLists = []
+            newLists.append(eachMethod)
+            dictMthodDictinary[eachMethod['Name']] = newLists
+    methodsToAvaoid = {'valueOf','post', 'del', 'setTimeout', 'setParameter', 'setHeaders','execute', 'run', 'start', 'query', 'get', 'send', 'sort', 'add', 'put', 'finish', 'getId','addAll', 'getRecordTypeId'}
+    classToAvoid = {'OneCorrespondApi','JSONObj','Logger', 'BatchableError','JSONObj','RollupActionCalculate','RollupService','GLOBAL_API_V1', 'GLOBAL_API_DocumentSettings_V1', 'SCHEMA_CO_FieldPickerPanel', 'REMOTE_CO_DocumentGenerator', 'GLOBAL_API_DocboxMembers_V1'}
+    for eachMethod in methodDictinary:
+        seatchMethodName = str(eachMethod['Class_And_Method_Name__c']).split('.')[1]
+        matchString = '.' +seatchMethodName+'('
+        if seatchMethodName not in methodsToAvaoid and eachMethod['Name'] not in classToAvoid:
+            for eachClass in apexClassData:
+                if str(eachClass['Name']) not in classToAvoid:
+                    count = 0
+                    for eachLine in eachClass['Body'].split('\n'):
+                        count = count +1
+                        if matchString in eachLine:
+                            row = []
+                            if eachClass['Name'] in dictMthodDictinary:
+                                methodName = getMethodNameFromLineNumber(str(eachClass['Name']), count, dictMthodDictinary[eachClass['Name']])
+                                uniqueIdentifier = str(methodName)+ ' | ' + eachMethod['Class_And_Method_Name__c']
+                                if methodName != 'Not Found' and uniqueIdentifier not in contrlDuplicate:
+                                    contrlDuplicate.append(uniqueIdentifier)
+                                    row.append(seatchMethodName)
+                                    row.append(eachMethod['Name' ] +'.' +seatchMethodName)
+                                    row.append(str(methodName))
+                                    row.append(uniqueIdentifier)
+                                    ws.append(row)
+    file_path = 'output'+ str(datetime.now().timestamp())
+    file_path = file_path +'.csv'
+    with open(file_path, 'w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        csv_writer.writerows(ws)
+    print(f'CSV file has been generated at: {file_path}')
+    return stackTraceToInsert
+
+def findMethodLine():
+    apexClassData = allApexRec
+    methodDictinary = allMethoDictinary
+    contrlDuplicate = []
+    stackTraceToInsert = []
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws['A1'] = 'Name'
+    ws['B1'] = 'Method_Name__c'
+    ws['C1'] = 'Found_In__c'
+    ws['D1'] = 'Unique_Identiier__c'
+    dictMthodDictinary = {}
+    for eachMethod in methodDictinary:
+        if eachMethod['Name'] in dictMthodDictinary:
+            newList = dictMthodDictinary[eachMethod['Name']]
+            newList.append(eachMethod)
+            dictMthodDictinary[eachMethod['Name']] = newList
+        else:
+            newLists = []
+            newLists.append(eachMethod)
+            dictMthodDictinary[eachMethod['Name']] = newLists
+    methodsToAvaoid = {'valueOf','post', 'del', 'setTimeout', 'setParameter', 'setHeaders','execute', 'run', 'start', 'query', 'get', 'send', 'sort', 'add', 'put', 'finish', 'getId','addAll', 'getRecordTypeId'}
+    classToAvoid = {'OneCorrespondApi','JSONObj','Logger', 'BatchableError','JSONObj','RollupActionCalculate','RollupService','GLOBAL_API_V1', 'GLOBAL_API_DocumentSettings_V1', 'SCHEMA_CO_FieldPickerPanel', 'REMOTE_CO_DocumentGenerator', 'GLOBAL_API_DocboxMembers_V1'}
+    for eachMethod in methodDictinary:
+        seatchMethodName = str(eachMethod['Class_And_Method_Name__c']).split('.')[1]
+        matchString = '.' +seatchMethodName+'('
+        if seatchMethodName not in methodsToAvaoid and eachMethod['Name'] not in classToAvoid:
+            for eachClass in apexClassData:
+                if str(eachClass['Name']) not in classToAvoid:
+                    count = 0
+                    for eachLine in eachClass['Body'].split('\n'):
+                        count = count +1
+                        if matchString in eachLine:
+                            row = []
+                            if eachClass['Name'] in dictMthodDictinary:
+                                methodName = getMethodNameFromLineNumber(str(eachClass['Name']), count, dictMthodDictinary[eachClass['Name']])
+                                uniqueIdentifier = str(methodName)+ ' | ' + eachMethod['Class_And_Method_Name__c']
+                                if methodName != 'Not Found' and uniqueIdentifier not in contrlDuplicate:
+                                    contrlDuplicate.append(uniqueIdentifier)
+                                    row.append(seatchMethodName)
+                                    row.append(eachMethod['Name' ] +'.' +seatchMethodName)
+                                    row.append(str(methodName))
+                                    row.append(uniqueIdentifier)
+                                    ws.append(row)
+    wb.save('stackTraceResult' + str(datetime.now().timestamp()) + '.csv')
+    print('"stackTraceResult" ' + str(datetime.now().timestamp()) + 'Excel file got saved Sucesfully, in the python file location')
+    return stackTraceToInsert
+
+
+def getMethodNameFromLineNumber(className, lineNumber, methodDictinary):
+    for eachMethod in methodDictinary:
+        if lineNumber >= eachMethod['Starting_Line__c'] and eachMethod['End_Line__c'] >= lineNumber:
+            return eachMethod['Class_And_Method_Name__c']
+    return 'Not Found'
+def getApexClass(access_token):
+    tooling_api_endpoint = 'https://' + domain + '.salesforce.com/services/data/v53.0/tooling/'
+    offsetVal = len(allApexRec)
+    # Construct the query
+    query = "SELECT Name, SymbolTable,Body FROM ApexClass  where (NOT Name  like 'test%') AND (NOT Name like '%test') offset  " +str(offsetVal)
+    headers = {'Authorization': 'Bearer ' + access_token}
+    params = {'q': query}
+    res = requests.get(tooling_api_endpoint + 'query/', headers=headers, params=params)
+    if res.status_code == 200:
+        response_body = res.json()
+        recordsData = response_body.get('records', [])
+        if(len(recordsData)) != 0:
+            for eachApexClassRec in recordsData:
+                allApexRec.append(eachApexClassRec)
+            getApexClass(access_token)
+    else:
+        return res.status_code
+    return allApexRec
+
+def getMethodDictinoryCompose(apexClassRecords):
+    methodDictionaryToInsert = []
+    methodAndLines = {}
+
+    for apexClasses in apexClassRecords:
+        if apexClasses['Body'] != '(hidden)':
+            classBody = apexClasses['Body']
+            lines = classBody.split('\n')
+            # resultFromAPI = listMethods(apexClasses.Name)
+            symbolTableData = apexClasses['SymbolTable']
+            resultFromAPI = {}
+            for method in symbolTableData['methods']:
+                locationData = method['location']
+                resultFromAPI[locationData['line']] = method['name']
+            lineNumberVsMethodDictionary = {}
+            beforeMethodLine = 0
+            methodAndLines[apexClasses['Name']] = {}
+            for methodLineNumber in resultFromAPI.keys():
+                methodAndLines[apexClasses['Name']][methodLineNumber] = resultFromAPI[methodLineNumber]
+                methodDictionary = {
+                    'Name': apexClasses['Name'],
+                    'Class_And_Method_Name__c': apexClasses['Name'] + '.' + resultFromAPI[methodLineNumber],
+                    'Starting_Line__c': methodLineNumber
+                }
+                if beforeMethodLine != 0:
+                    lineNumberVsMethodDictionary[beforeMethodLine]['End_Line__c'] = methodLineNumber - 1
+                lineNumberVsMethodDictionary[methodLineNumber] = methodDictionary
+                beforeMethodLine = methodLineNumber
+
+            if beforeMethodLine != 0:
+                lineNumberVsMethodDictionary[beforeMethodLine]['End_Line__c'] = len(lines)
+                for key in lineNumberVsMethodDictionary.keys():
+                    methodDictionaryToInsert.append(lineNumberVsMethodDictionary[key])
+    return methodDictionaryToInsert
+
+# Example usage:
+access_token = sf.session_id
+apexClassData = getApexClass(access_token)
+# methodDictinary = getMethodDictinory(access_token)
+allMethoDictinary = getMethodDictinoryCompose(apexClassData)
+# stackTraceToInsert = findMethodLine()
+stackTraceToInsert = findMethodLineGenerateCSV()
+
+	</div>
 </body>
 </html>
