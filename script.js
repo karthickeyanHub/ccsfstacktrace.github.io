@@ -177,3 +177,12 @@ function displayHierarchyText(hierarchy) {
                 tooltip.style.visibility = 'hidden';
             }, 1000);
         }
+function downloadFile() {
+	// Get content from the textarea (you can change this based on the actual data)
+	const text = document.getElementById("pythonCode").innerHTML;
+	const blob = new Blob([text], { type: 'text/plain' });
+	const link = document.createElement('a');
+	link.href = URL.createObjectURL(blob);
+	link.download = 'StackTrace.py'; // Name of the file to download
+	link.click();
+}
