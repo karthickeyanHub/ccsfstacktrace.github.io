@@ -36,6 +36,7 @@ function createOnClickHandler(parameter) {
 	document.getElementById("searchParams").value = parameter;
 }
 function handleClick(event){
+	document.getElementById("copyButton").innerHTML = '<i class="fas fa-copy"></i> Copy JSON';
 	searchVar = document.getElementById("searchParams").value;
 	isNoMethodFound = false;
 	const file = fileData;
