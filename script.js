@@ -167,6 +167,7 @@ function displayHierarchyText(hierarchy) {
 	textarea.value = '\n'+JSON.stringify(finalJson, null, 4);
 }
  function copyTextareaValue() {
+			document.getElementById("copyButton").innerHTML = '<i class="fas fa-check"></i> Copied!';
             var textarea = document.getElementById("hierarchyText");
             textarea.select();
             textarea.setSelectionRange(0, 99999);
@@ -177,6 +178,7 @@ function displayHierarchyText(hierarchy) {
                 tooltip.style.visibility = 'hidden';
             }, 1000);
         }
+		
 function downloadFile() {
 	// Get content from the textarea (you can change this based on the actual data)
 	const text = document.getElementById("pythonCode").innerHTML;
