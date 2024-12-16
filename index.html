@@ -128,14 +128,17 @@
 		
 		
 		 .textarea-container {
+			width:100%;
             position: relative;
             //width: fit-content;
             margin: 20px;
+			
         }
 
         /* Styling the textarea */
         textarea {
-		font-family: 'Courier New', Courier, monospace;
+		
+			font-family: 'Courier New', Courier, monospace;
            // width: 348px;
            // height: 350px;
             padding: 10px;
@@ -146,14 +149,14 @@
 
         /* Styling the copy button */
         .copy-btn {
-            position: absolute;
-            top: 1px;
-            right: 10px;
-            border: none;
-            background-color: #fff;
-            padding: 1px;
-            cursor: pointer;
-            font-size: 14px;
+        position: absolute;
+		top: 10px; /* Adjust the position from the top */
+		right: 6%; /* Adjust the position from the right */
+		border: none;
+		background-color: #fff;
+		padding: 1px;
+		cursor: pointer;
+		font-size: 14px;
         }
 
         .copy-btn:hover {
@@ -248,9 +251,9 @@
                 <div id="hierarchy" class="hierarchy"></div>
             </div>
             <!-- Textarea Section -->
-            <div class="">
+            <div class="textarea-container">
                 <textarea  class="alignTextArea" name="message" rows="4" cols="50" id="hierarchyText"></textarea>
-				<button class="copy-btn pythonButton" id="copyButton" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> Copy JSON</button>
+				<button class="copy-btn" id="copyButton" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> Copy JSON</button>
             </div>
         </div>
     </div>
