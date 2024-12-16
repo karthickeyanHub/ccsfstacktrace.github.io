@@ -27,7 +27,7 @@
             margin: 10px;
         }
         .alignTextArea {
-            //width: 100%;
+            width: 95%;
             height: 350px; /* Set a fixed height for the textarea */
         }
         .container {
@@ -35,6 +35,7 @@
         }
         .side-by-side {
             display: flex;
+
             //justify-content: space-between;
         }
         .hierarchy-container, .textarea-container {
@@ -44,7 +45,7 @@
 		  position: relative;
 		  width: 60px;
 		  height: 25px;
-		  background-color: #FF0000;
+		  background-color: #006F96;
 		  border-radius: 50px;
 		  cursor: pointer;
 		  transition: background-color 0.3s;
@@ -62,7 +63,7 @@
 		  transition: transform 0.3s;
 		}
 		.toggle.on {
-		  background-color: #FF0000;
+		  background-color: #006F96;
 		}
 		.toggle.on:before {
 		  transform: translateX(35px);
@@ -119,7 +120,7 @@
 			font-size: 21px;
 			line-height: 37px;
 			margin-top: 15px;
-			background-color: #FF0000;
+			background-color: #006F96;
 			border: none;
 			border-radius: 5%;
 			color:#fff;
@@ -127,15 +128,19 @@
 		
 		
 		 .textarea-container {
+			width:100%;
             position: relative;
-            width: fit-content;
+            //width: fit-content;
             margin: 20px;
+			
         }
 
         /* Styling the textarea */
         textarea {
-            width: 348px;
-            height: 350px;
+		
+			font-family: 'Query New', sans-serif;
+           // width: 348px;
+           // height: 350px;
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ccc;
@@ -144,14 +149,14 @@
 
         /* Styling the copy button */
         .copy-btn {
-            position: absolute;
-            top: 1px;
-            right: 10px;
-            border: none;
-            background-color: #fff;
-            padding: 1px;
-            cursor: pointer;
-            font-size: 14px;
+        position: absolute;
+		top: 10px; /* Adjust the position from the top */
+		right: 6%; /* Adjust the position from the right */
+		border: none;
+		background-color: #fff;
+		padding: 1px;
+		cursor: pointer;
+		font-size: 14px;
         }
 
         .copy-btn:hover {
@@ -197,6 +202,13 @@
 			width: 420;
 			 cursor: pointer;
 		}
+		.alignButton{
+			padding-right:5%;
+			float:right;
+		}
+		.alignTextContent{
+			padding-top:3%;
+		}
     </style>
 </head>
 <body>
@@ -217,10 +229,10 @@
 				CCSF => cancelTransactionController.createOrUpdateAssessmentsForProp8
 				Sanmatio => AppraiserActivityAnnualTriggerHandler.processAppraiserActivities
 				-->
-                <input type="text" id="searchParams" placeholder="className.MethodName" class="form-control inputControle" value="">
+                <input type="text" id="searchParams" placeholder="className.MethodName" class="form-control inputControle" value="cancelTransactionController.createOrUpdateAssessmentsForProp8">
             </div>
         </Center>
-		<center>
+		<div class="alignButton">
 			<div class="side-by-side toggle-wrapper">			
 			  <div id="toggle" class="toggle"></div>
 			  <span id="toggleLabel" class="label ">Downstream</span>
@@ -230,18 +242,18 @@
 
 			<a onclick="downloadFile()" class=" pythonButton ">Download Python Script to get Hierarchy file</a>
 
-		</center>
-
-        <div class="side-by-side mt-4">
-            <!-- Textarea Section -->
-            <div class="textarea-container">
-                <textarea  class="alignTextArea" name="message" rows="4" cols="50" id="hierarchyText"></textarea>
-				<button class="copy-btn pythonButton" id="copyButton" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> Copy JSON</button>
-            </div>
-			
+		</div>
+		
+        <div class="alignTextContent mt-4">
+		
             <!-- Hierarchy Display Section -->
             <div class="hierarchy-container">
                 <div id="hierarchy" class="hierarchy"></div>
+            </div>
+            <!-- Textarea Section -->
+            <div class="textarea-container">
+                <textarea  class="alignTextArea" name="message" rows="4" cols="50" id="hierarchyText"></textarea>
+				<button class="copy-btn" id="copyButton" onclick="copyTextareaValue()"><i class="fas fa-copy"></i> Copy JSON</button>
             </div>
         </div>
     </div>
