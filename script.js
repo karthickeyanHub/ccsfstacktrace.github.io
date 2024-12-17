@@ -7,6 +7,11 @@ var copyText = "";
 var fileData;
 var isNoMethodFound = false;
 var isUpStream = false;
+
+
+
+var storedValue = localStorage.getItem('searchString');
+document.getElementById('searchParams').value = storedValue;
 const toggle = document.getElementById('toggle');
   const toggleLabel = document.getElementById('toggleLabel');
 
@@ -22,7 +27,14 @@ const toggle = document.getElementById('toggle');
       toggleLabel.textContent = 'Downstream';
     }
   });
-
+function downloadButton(event) {
+	var link = document.createElement('a');            
+	link.href = './UpdatedOutputFIle.csv'; 
+	link.download = 'Sample csv Hierarchy file.csv'; 
+	document.body.appendChild(link);            
+	link.click();            
+	document.body.removeChild(link);
+}
 function handleFileSelect(event) {
 	visitedNode = [];
 	visitedNodeForJSON =[];
@@ -38,6 +50,7 @@ function createOnClickHandler(parameter) {
 function handleClick(event){
 	document.getElementById("copyButton").innerHTML = '<i class="fas fa-copy"></i> Copy JSON';
 	searchVar = document.getElementById("searchParams").value;
+	localStorage.setItem('searchString', searchVar);
 	isNoMethodFound = false;
 	const file = fileData;
     if (file) {
@@ -188,4 +201,13 @@ function downloadFile() {
 	link.href = URL.createObjectURL(blob);
 	link.download = 'StackTrace.py'; // Name of the file to download
 	link.click();
+	
+	/*var link = document.createElement('a');            
+	link.href = './pythonFile2.txt'; 
+	link.download = 'Sample csv Hierarchy file.txt'; 
+	link.click();  */          
+}
+
+function copyPython(){
+	
 }
