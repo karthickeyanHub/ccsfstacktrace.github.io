@@ -27,14 +27,7 @@ const toggle = document.getElementById('toggle');
       toggleLabel.textContent = 'Downstream';
     }
   });
-function downloadButton(event) {
-	var link = document.createElement('a');            
-	link.href = './UpdatedOutputFIle.csv'; 
-	link.download = 'Sample csv Hierarchy file.csv'; 
-	document.body.appendChild(link);            
-	link.click();            
-	document.body.removeChild(link);
-}
+
 function handleFileSelect(event) {
 	visitedNode = [];
 	visitedNodeForJSON =[];
@@ -207,7 +200,14 @@ function downloadFile() {
 	link.download = 'Sample csv Hierarchy file.txt'; 
 	link.click();  */          
 }
-
+function downloadButton(event) {
+	var link = document.createElement('a');            
+	link.href = './UpdatedOutputFIle.csv'; 
+	link.download = 'Sample csv Hierarchy file.csv'; 
+	document.body.appendChild(link);            
+	link.click();            
+	document.body.removeChild(link);
+}
 function copyPython(){
 	
 }
