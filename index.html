@@ -150,7 +150,7 @@
         /* Styling the copy button */
         .copy-btn {
         position: absolute;
-		top: 10px; /* Adjust the position from the top */
+		top: 50px; /* Adjust the position from the top */
 		right: 6%; /* Adjust the position from the right */
 		border: none;
 		background-color: #fff;
@@ -202,6 +202,11 @@
 			width: 420;
 			 cursor: pointer;
 		}
+		.pythonButton2{	
+			Display: inline;		
+			cursor: pointer;
+			width: 420;
+		}
 		.alignButton{
 			padding-right:5%;
 			float:right;
@@ -226,10 +231,11 @@
             <div class="col-md-6 rowStyle">
                 <label for="searchParams" class="lebelALign">Search Method&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; :&nbsp;</label>
 				<!--
-				Project 1 => cancelTransactionController.createOrUpdateAssessmentsForProp8
-				project 2 => AppraiserActivityAnnualTriggerHandler.processAppraiserActivities
+				Project 1 => Class4.Method6 / cancelTransactionController.createOrUpdateAssessmentsForProp8
+				Project 2 => AppraiserActivityAnnualTriggerHandler.processAppraiserActivities
 				-->
                 <input type="text" id="searchParams" placeholder="className.MethodName" class="form-control inputControle" value="">
+				<small id="emailHelp">If you are using Demo Hierarchy file use "Class4.Method6" For searching</small>
             </div>
         </Center>
 		<div class="alignButton">
@@ -240,7 +246,11 @@
 			</div>
 			<button onclick="handleClick()" class=" searchButton">Get Hierarchy</button>
 
-			<a onclick="downloadFile()" class=" pythonButton ">Download Python Script to get Hierarchy file</a>
+			<a onclick="downloadFile()" class=" pythonButton ">Python Script to get Hierarchy file</a>
+			<!--<a id="downloadPythonButton" class="pythonButton">Python Script to get Hierarchy file</a>-->
+			|
+			<a onclick="downloadButton()" class="pythonButton2">Demo  Hierarchy file</a>
+			<br/><br/>
 
 		</div>
 		
@@ -273,13 +283,12 @@
 		#Instruction
 		# 1) Update the authentication info
 		# 2) Import requests, urllib.parse, openpyxl, csv, re
-		#           datetime import datetime, simple_salesforce import Salesforce 
+		# from datetime import datetime, simple_salesforce import Salesforce
 
 		username = 'userName@xyz.e2e' #User Id
 		password = 'password' #User Password
 		security_token = 'CVO8sdfr9rUPobzHCa44yWkN' #Security Token
-		domain = 'test--esd.sandbox.my' # Org base URL
-
+		domain = 'test--esd.sandbox.my' # without https:// Org base URL
 
 		allApexRec = []
 		allMethoDictinary = []
@@ -288,27 +297,6 @@
 			print("Connection successful!")
 		else:
 			print("Connection failed.")
-
-		def getMethodDictinory(access_token):
-			tooling_api_endpoint = 'https://' + domain + '.salesforce.com/services/data/v53.0/'
-			offsetVal = len(allMethoDictinary)
-			# Construct the query
-			query = "SELECT Id, Name, Starting_Line__c, End_Line__c, Class_And_Method_Name__c FROM Method_Dictionary__c offset  " +str \
-				(offsetVal)
-			headers = {'Authorization': 'Bearer ' + access_token}
-			params = {'q': query}
-			res = requests.get(tooling_api_endpoint + 'query/', headers=headers, params=params)
-			if res.status_code == 200:
-				response_body = res.json()
-				recordsData = response_body.get('records', [])
-				if (len(recordsData)) != 0:
-					for eachMethoDictinary in recordsData:
-						allMethoDictinary.append(eachMethoDictinary)
-					getMethodDictinory(access_token)
-			else:
-				return res.status_code
-			return allMethoDictinary
-
 		def findMethodLineGenerateCSV():
 			apexClassData = allApexRec
 			methodDictinary = allMethoDictinary
@@ -357,56 +345,8 @@
 			print(f'CSV file has been generated at: {file_path}')
 			return stackTraceToInsert
 
-		def findMethodLine():
-			apexClassData = allApexRec
-			methodDictinary = allMethoDictinary
-			contrlDuplicate = []
-			stackTraceToInsert = []
-			wb = openpyxl.Workbook()
-			ws = wb.active
-			ws['A1'] = 'Name'
-			ws['B1'] = 'Method_Name__c'
-			ws['C1'] = 'Found_In__c'
-			ws['D1'] = 'Unique_Identiier__c'
-			dictMthodDictinary = {}
-			for eachMethod in methodDictinary:
-				if eachMethod['Name'] in dictMthodDictinary:
-					newList = dictMthodDictinary[eachMethod['Name']]
-					newList.append(eachMethod)
-					dictMthodDictinary[eachMethod['Name']] = newList
-				else:
-					newLists = []
-					newLists.append(eachMethod)
-					dictMthodDictinary[eachMethod['Name']] = newLists
-			methodsToAvaoid = {'valueOf','post', 'del', 'setTimeout', 'setParameter', 'setHeaders','execute', 'run', 'start', 'query', 'get', 'send', 'sort', 'add', 'put', 'finish', 'getId','addAll', 'getRecordTypeId'}
-			classToAvoid = {'OneCorrespondApi','JSONObj','Logger', 'BatchableError','JSONObj','RollupActionCalculate','RollupService','GLOBAL_API_V1', 'GLOBAL_API_DocumentSettings_V1', 'SCHEMA_CO_FieldPickerPanel', 'REMOTE_CO_DocumentGenerator', 'GLOBAL_API_DocboxMembers_V1'}
-			for eachMethod in methodDictinary:
-				seatchMethodName = str(eachMethod['Class_And_Method_Name__c']).split('.')[1]
-				matchString = '.' +seatchMethodName+'('
-				if seatchMethodName not in methodsToAvaoid and eachMethod['Name'] not in classToAvoid:
-					for eachClass in apexClassData:
-						if str(eachClass['Name']) not in classToAvoid:
-							count = 0
-							for eachLine in eachClass['Body'].split('\n'):
-								count = count +1
-								if matchString in eachLine:
-									row = []
-									if eachClass['Name'] in dictMthodDictinary:
-										methodName = getMethodNameFromLineNumber(str(eachClass['Name']), count, dictMthodDictinary[eachClass['Name']])
-										uniqueIdentifier = str(methodName)+ ' | ' + eachMethod['Class_And_Method_Name__c']
-										if methodName != 'Not Found' and uniqueIdentifier not in contrlDuplicate:
-											contrlDuplicate.append(uniqueIdentifier)
-											row.append(seatchMethodName)
-											row.append(eachMethod['Name' ] +'.' +seatchMethodName)
-											row.append(str(methodName))
-											row.append(uniqueIdentifier)
-											ws.append(row)
-			wb.save('stackTraceResult' + str(datetime.now().timestamp()) + '.csv')
-			print('"stackTraceResult" ' + str(datetime.now().timestamp()) + 'Excel file got saved Sucesfully, in the python file location')
-			return stackTraceToInsert
-
-
 		def getMethodNameFromLineNumber(className, lineNumber, methodDictinary):
+			print('You can Expect Error in the next 2nd line, Please replace &gt; with grater than symbol')
 			for eachMethod in methodDictinary:
 				if lineNumber >= eachMethod['Starting_Line__c'] and eachMethod['End_Line__c'] >= lineNumber:
 					return eachMethod['Class_And_Method_Name__c']
@@ -427,6 +367,7 @@
 						allApexRec.append(eachApexClassRec)
 					getApexClass(access_token)
 			else:
+				print("Error Accored in apex class retrival")
 				return res.status_code
 			return allApexRec
 
@@ -441,9 +382,10 @@
 					# resultFromAPI = listMethods(apexClasses.Name)
 					symbolTableData = apexClasses['SymbolTable']
 					resultFromAPI = {}
-					for method in symbolTableData['methods']:
-						locationData = method['location']
-						resultFromAPI[locationData['line']] = method['name']
+					if symbolTableData != None:
+						for method in symbolTableData['methods']:
+							locationData = method['location']
+							resultFromAPI[locationData['line']] = method['name']
 					lineNumberVsMethodDictionary = {}
 					beforeMethodLine = 0
 					methodAndLines[apexClasses['Name']] = {}
@@ -467,11 +409,15 @@
 
 		# Example usage:
 		access_token = sf.session_id
+		print("Starting of Retrieving the Apex class from the org!")
 		apexClassData = getApexClass(access_token)
-		# methodDictinary = getMethodDictinory(access_token)
+		print("Ending of Retrieving the Apex class from the org!")
+		print("Starting of Retrieving the Apex Methods from the Class!")
 		allMethoDictinary = getMethodDictinoryCompose(apexClassData)
-		# stackTraceToInsert = findMethodLine()
+		print("Ending of Retrieving the Apex Methods from the Class!")
+		print("Generate the CSV File")
 		stackTraceToInsert = findMethodLineGenerateCSV()
+
 
 	</div>
 </body>
